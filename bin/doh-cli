@@ -42,6 +42,7 @@ if __name__ == '__main__':
                         default="https://doh.libredns.gr/dns-query")
     parser.add_argument("-v", "--version", action="version",
                         version="{0} {1}".format(parser.prog, __version__))
+    parser.add_argument("--token", help="Provide JWT")
     args = parser.parse_args()
 
     if "." in args.rr:
@@ -56,6 +57,6 @@ if __name__ == '__main__':
     endpoint = args.url if args.url else args.dns
 
     output = resolve.answer(args.domain, args.rr, endpoint, args.json, args.debug,
-                            args.verbose, args.time, args.dnssec)
+                            args.verbose, args.time, args.dnssec, args.token)
 
     print(output)

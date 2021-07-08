@@ -8,10 +8,11 @@ import itertools
 
 
 def answer(domain, rr, endpoint, format_json=None, debug=None, verbose=None,
-           response_time=None, request_dnssec=None):
+           response_time=None, request_dnssec=None, token=None):
     """
     Sends query to DNS provider and prints the answer.
     """
+    print("here?")
     message = dns.message.make_query(domain, rr)
 
     if request_dnssec:
@@ -21,8 +22,17 @@ def answer(domain, rr, endpoint, format_json=None, debug=None, verbose=None,
 
     start_time = time.time() * 1000
     try:
+        if token is None:
+            header_object = {"Content-type": "application/dns-message"}
+        else:
+            header_object = {
+                "Content-type": "application/dns-message",
+                "Authorization": "Bearer {}".format(token)
+            }
+        print(header_object)
+
         r = requests.get(endpoint, params={"dns": dns_req},
-                         headers={"Content-type": "application/dns-message"})
+                         headers=header_object)
         r.raise_for_status()
     except requests.RequestException as reqerror:
         sys.stderr.write("{0}\n".format(reqerror))
